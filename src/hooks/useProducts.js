@@ -1,10 +1,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from '../lib/supabase'
 
+const PAGE_SIZE = 24
+
 export function useProducts() {
   const [allProducts, setAllProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [page, setPage] = useState(1)
   const [filters, setFilters] = useState({
     categories: [],
     subcategories: [],
@@ -16,26 +19,16 @@ export function useProducts() {
     setLoading(true)
     setError(null)
     try {
+      // Only fetch product columns — no images join.
+      // cover_image_url is stored directly on products, so cards render instantly.
+      // product_images are fetched lazily when a modal is opened.
       const { data, error: fetchError } = await supabase
         .from('products')
-        .select(`
-          *,
-          product_images (
-            id,
-            image_url,
-            position
-          )
-        `)
+        .select('id, name, sku, category, subcategory, specifications, tags, cover_image_url, created_at, updated_at')
         .order('name', { ascending: true })
 
       if (fetchError) throw fetchError
-
-      const sorted = data?.map(product => ({
-        ...product,
-        product_images: product.product_images?.sort((a, b) => a.position - b.position) || []
-      }))
-
-      setAllProducts(sorted || [])
+      setAllProducts(data || [])
     } catch (err) {
       console.error('Error fetching products:', err)
       setError(err.message)
@@ -47,6 +40,11 @@ export function useProducts() {
   useEffect(() => {
     fetchProducts()
   }, [])
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => {
+    setPage(1)
+  }, [filters])
 
   // Derive filter options from data
   const filterOptions = useMemo(() => {
@@ -68,7 +66,7 @@ export function useProducts() {
   }, [allProducts])
 
   // Apply filters
-  const products = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     return allProducts.filter(p => {
       if (filters.categories.length > 0 && !filters.categories.includes(p.category)) return false
       if (filters.subcategories.length > 0 && !filters.subcategories.includes(p.subcategory)) return false
@@ -86,6 +84,13 @@ export function useProducts() {
       return true
     })
   }, [allProducts, filters])
+
+  // Paginate
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const products = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE
+    return filteredProducts.slice(start, start + PAGE_SIZE)
+  }, [filteredProducts, page])
 
   const toggleArrayFilter = (key, value) => {
     setFilters(prev => {
@@ -116,6 +121,7 @@ export function useProducts() {
   return {
     products,
     allProducts,
+    filteredProducts,
     loading,
     error,
     filters,
@@ -124,6 +130,10 @@ export function useProducts() {
     updateFilter,
     clearFilters,
     hasActiveFilters,
+    page,
+    setPage,
+    totalPages,
+    totalCount: filteredProducts.length,
     refetch: fetchProducts
   }
 }

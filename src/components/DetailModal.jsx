@@ -1,26 +1,45 @@
 import { useEffect, useState, useMemo } from 'react'
-import { X, Trash2, Pencil } from 'lucide-react'
+import { X, Trash2, Pencil, Loader2 } from 'lucide-react'
 import { ImageCarousel } from './ImageCarousel'
 import { ImageLightbox } from './ImageLightbox'
 import { EditProductModal } from './EditProductModal'
 import { useAdmin } from '../contexts/AdminContext'
+import { supabase } from '../lib/supabase'
 
 export function DetailModal({ product: initialProduct, onClose, onDelete, onUpdated }) {
   const { isAdmin } = useAdmin()
   const [product, setProduct] = useState(initialProduct)
+  const [productImages, setProductImages] = useState([])
+  const [imagesLoading, setImagesLoading] = useState(true)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [editOpen, setEditOpen] = useState(false)
 
   useEffect(() => { setProduct(initialProduct) }, [initialProduct])
 
+  // Fetch images lazily when modal opens
+  useEffect(() => {
+    if (!initialProduct?.id) return
+    setImagesLoading(true)
+    supabase
+      .from('product_images')
+      .select('id, image_url, position')
+      .eq('product_id', initialProduct.id)
+      .order('position', { ascending: true })
+      .then(({ data }) => {
+        setProductImages(data || [])
+        setImagesLoading(false)
+      })
+  }, [initialProduct?.id])
+
   const allImageUrls = useMemo(() => {
-    if (!product) return []
-    return [
+    const urls = [
       product.cover_image_url,
-      ...(product.product_images || []).map(img => img.image_url)
-    ].filter(Boolean).filter((url, idx, arr) => arr.indexOf(url) === idx)
-  }, [product])
+      ...productImages.map(img => img.image_url)
+    ].filter(Boolean)
+    // Deduplicate
+    return [...new Set(urls)]
+  }, [product, productImages])
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -48,12 +67,19 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
       >
         <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
           {/* Image section */}
-          <div className="md:w-1/2 p-4 bg-gray-50">
-            <ImageCarousel
-              images={product.product_images}
-              coverImageUrl={product.cover_image_url}
-              onImageClick={(idx) => { setLightboxIndex(idx); setLightboxOpen(true) }}
-            />
+          <div className="md:w-1/2 p-4 bg-gray-50 flex items-center justify-center">
+            {imagesLoading ? (
+              <div className="flex flex-col items-center gap-2 text-gray-400">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span className="text-sm">Loading images…</span>
+              </div>
+            ) : (
+              <ImageCarousel
+                images={productImages}
+                coverImageUrl={product.cover_image_url}
+                onImageClick={(idx) => { setLightboxIndex(idx); setLightboxOpen(true) }}
+              />
+            )}
           </div>
 
           {/* Details section */}
@@ -135,6 +161,11 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
                     ))}
                   </div>
                 </div>
+              )}
+
+              {/* Image count */}
+              {!imagesLoading && allImageUrls.length > 1 && (
+                <p className="text-xs text-gray-400">{allImageUrls.length} photos available</p>
               )}
             </div>
           </div>

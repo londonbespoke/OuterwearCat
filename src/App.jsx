@@ -22,6 +22,7 @@ function App() {
   const {
     products,
     allProducts,
+    filteredProducts,
     loading,
     error,
     filters,
@@ -30,6 +31,10 @@ function App() {
     toggleArrayFilter,
     clearFilters,
     hasActiveFilters,
+    page,
+    setPage,
+    totalPages,
+    totalCount,
     refetch
   } = useProducts()
 
@@ -53,7 +58,7 @@ function App() {
             isOpen={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
             totalCount={allProducts.length}
-            filteredCount={products.length}
+            filteredCount={totalCount}
           />
 
           <main className="flex-1 p-6 lg:ml-0">
@@ -64,6 +69,10 @@ function App() {
                 error={error}
                 onProductClick={setSelectedProduct}
                 onDeleteClick={handleDeleteClick}
+                page={page}
+                setPage={setPage}
+                totalPages={totalPages}
+                totalCount={totalCount}
               />
             </div>
           </main>
