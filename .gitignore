@@ -1,0 +1,23 @@
+# Logs
+logs
+*.log
+
+# Dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Env files — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
