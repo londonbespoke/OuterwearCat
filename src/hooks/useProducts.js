@@ -19,6 +19,7 @@ export function useProducts() {
     categories: [],
     subcategories: [],
     tags: [],
+    collections: [],
     search: ''
   })
 
@@ -26,7 +27,7 @@ export function useProducts() {
   useEffect(() => {
     supabase
       .from('products')
-      .select('category, subcategory, tags')
+      .select('category, subcategory, tags, collection')
       .then(({ data }) => setFilterMeta(data || []))
   }, [])
 
@@ -42,7 +43,7 @@ export function useProducts() {
       let query = supabase
         .from('products')
         .select(
-          'id, name, sku, category, subcategory, specifications, tags, cover_image_url',
+          'id, name, sku, category, subcategory, specifications, tags, collection, cover_image_url',
           { count: 'exact' }
         )
         .order('name', { ascending: true })
@@ -53,6 +54,9 @@ export function useProducts() {
       }
       if (filters.subcategories.length > 0) {
         query = query.in('subcategory', filters.subcategories)
+      }
+      if (filters.collections.length > 0) {
+        query = query.in('collection', filters.collections)
       }
       if (filters.tags.length > 0) {
         query = query.overlaps('tags', filters.tags)
@@ -87,15 +91,18 @@ export function useProducts() {
     const subcategories = new Set()
     const tags = new Set()
 
+    const collections = new Set()
     filterMeta.forEach(p => {
       if (p.category) categories.add(p.category)
       if (p.subcategory) subcategories.add(p.subcategory)
+      if (p.collection) collections.add(p.collection)
       p.tags?.forEach(t => tags.add(t))
     })
 
     return {
       categories: Array.from(categories).sort(),
       subcategories: Array.from(subcategories).sort(),
+      collections: Array.from(collections).sort(),
       tags: Array.from(tags).sort()
     }
   }, [filterMeta])
@@ -128,12 +135,13 @@ export function useProducts() {
 
   const clearFilters = () => {
     setPage(1)
-    setFilters({ categories: [], subcategories: [], tags: [], search: '' })
+    setFilters({ categories: [], subcategories: [], collections: [], tags: [], search: '' })
   }
 
   const hasActiveFilters =
     filters.categories.length > 0 ||
     filters.subcategories.length > 0 ||
+    filters.collections.length > 0 ||
     filters.tags.length > 0 ||
     filters.search !== ''
 

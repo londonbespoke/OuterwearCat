@@ -116,6 +116,16 @@ export function FilterSidebar({
             </button>
           )}
 
+          {filterOptions.collections.length > 0 && (
+            <FilterSection title="Collection">
+              <CheckboxGroup
+                options={filterOptions.collections}
+                selected={filters.collections}
+                onToggle={v => onToggleFilter('collections', v)}
+              />
+            </FilterSection>
+          )}
+
           {filterOptions.categories.length > 0 && (
             <FilterSection title="Category">
               <CheckboxGroup

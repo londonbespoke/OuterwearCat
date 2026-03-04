@@ -8,6 +8,7 @@ export function EditProductModal({ product, onClose, onSaved }) {
     sku: product.sku || '',
     category: product.category || '',
     subcategory: product.subcategory || '',
+    collection: product.collection || '',
     specifications: product.specifications || '',
     tagsRaw: (product.tags || []).join(', ')
   })
@@ -73,6 +74,7 @@ export function EditProductModal({ product, onClose, onSaved }) {
         <div className="p-6 space-y-4">
           {field('Product Name', 'name')}
           {field('SKU', 'sku')}
+          {field('Collection', 'collection')}
           {field('Category', 'category')}
           {field('Subcategory', 'subcategory')}
           {field('Specifications', 'specifications', true)}
