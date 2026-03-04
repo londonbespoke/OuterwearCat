@@ -1,5 +1,6 @@
 import { ProductCard } from './ProductCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { PAGE_SIZE_OPTIONS } from '../hooks/useProducts'
 
 function SkeletonCard() {
   return (
@@ -17,7 +18,7 @@ function SkeletonCard() {
   )
 }
 
-export function Gallery({ products, loading, error, onProductClick, onDeleteClick, page, setPage, totalPages, totalCount }) {
+export function Gallery({ products, loading, error, onProductClick, onDeleteClick, page, setPage, totalPages, totalCount, pageSize, changePageSize }) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
@@ -38,17 +39,33 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
     )
   }
 
-  const startItem = (page - 1) * 24 + 1
-  const endItem = Math.min(page * 24, totalCount)
+  const effectiveSize = pageSize === 'All' ? totalCount : pageSize
+  const startItem = (page - 1) * effectiveSize + 1
+  const endItem = Math.min(page * effectiveSize, totalCount)
 
   return (
     <div>
-      {/* Results count */}
-      <p className="text-sm text-gray-400 mb-4 h-5">
-        {!loading && totalCount > 0 && (
-          <>Showing {startItem}–{endItem} of {totalCount} products</>
-        )}
-      </p>
+      {/* Results count + per-page selector */}
+      <div className="flex items-center justify-between mb-4 h-8">
+        <p className="text-sm text-gray-400">
+          {!loading && totalCount > 0 && (
+            <>Showing {startItem}–{endItem} of {totalCount} products</>
+          )}
+        </p>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <span>Show</span>
+          <select
+            value={pageSize}
+            onChange={e => changePageSize(e.target.value === 'All' ? 'All' : Number(e.target.value))}
+            className="border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900"
+          >
+            {PAGE_SIZE_OPTIONS.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+          <span>per page</span>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading

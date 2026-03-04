@@ -33,6 +33,8 @@ function App() {
     allProductCount,
     page,
     setPage,
+    pageSize,
+    changePageSize,
     totalPages,
     refetch
   } = useProducts()
@@ -70,6 +72,8 @@ function App() {
                 onDeleteClick={handleDeleteClick}
                 page={page}
                 setPage={setPage}
+                pageSize={pageSize}
+                changePageSize={changePageSize}
                 totalPages={totalPages}
                 totalCount={totalCount}
               />

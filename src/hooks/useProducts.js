@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
-const PAGE_SIZE = 24
+export const PAGE_SIZE_OPTIONS = [24, 48, 96, 'All']
 
 export function useProducts() {
   // Lightweight metadata for sidebar filter options (fetched once, no images)
@@ -13,6 +13,7 @@ export function useProducts() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(24)
 
   const [filters, setFilters] = useState({
     categories: [],
@@ -34,8 +35,9 @@ export function useProducts() {
     setLoading(true)
     setError(null)
     try {
-      const start = (page - 1) * PAGE_SIZE
-      const end = start + PAGE_SIZE - 1
+      const effectiveSize = pageSize === 'All' ? 10000 : pageSize
+      const start = (page - 1) * effectiveSize
+      const end = start + effectiveSize - 1
 
       let query = supabase
         .from('products')
@@ -73,7 +75,7 @@ export function useProducts() {
     } finally {
       setLoading(false)
     }
-  }, [page, filters])
+  }, [page, pageSize, filters])
 
   useEffect(() => {
     fetchPage()
@@ -98,7 +100,8 @@ export function useProducts() {
     }
   }, [filterMeta])
 
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE))
+  const effectiveSize = pageSize === 'All' ? 10000 : pageSize
+  const totalPages = Math.max(1, Math.ceil(totalCount / effectiveSize))
 
   const toggleArrayFilter = (key, value) => {
     setPage(1)
@@ -116,6 +119,11 @@ export function useProducts() {
   const updateFilter = (key, value) => {
     setPage(1)
     setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const changePageSize = (size) => {
+    setPage(1)
+    setPageSize(size)
   }
 
   const clearFilters = () => {
@@ -143,6 +151,8 @@ export function useProducts() {
     hasActiveFilters,
     page,
     setPage,
+    pageSize,
+    changePageSize,
     totalPages,
     refetch: fetchPage
   }
