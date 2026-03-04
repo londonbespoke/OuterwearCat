@@ -1,16 +1,23 @@
 import { ProductCard } from './ProductCard'
-import { Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
+      <div className="aspect-square bg-gray-200" />
+      <div className="p-4 space-y-2">
+        <div className="h-3 bg-gray-200 rounded w-3/4" />
+        <div className="h-3 bg-gray-200 rounded w-1/2" />
+        <div className="flex gap-1.5 mt-2">
+          <div className="h-5 bg-gray-200 rounded-full w-16" />
+          <div className="h-5 bg-gray-200 rounded-full w-12" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function Gallery({ products, loading, error, onProductClick, onDeleteClick, page, setPage, totalPages, totalCount }) {
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-        <p className="mt-4 text-gray-500">Loading products…</p>
-      </div>
-    )
-  }
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
@@ -22,7 +29,7 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
     )
   }
 
-  if (products.length === 0) {
+  if (!loading && products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-gray-400 text-center">
         <p className="text-lg font-medium">No products found</p>
@@ -31,26 +38,34 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
     )
   }
 
+  const startItem = (page - 1) * 24 + 1
+  const endItem = Math.min(page * 24, totalCount)
+
   return (
     <div>
       {/* Results count */}
-      <p className="text-sm text-gray-400 mb-4">
-        Showing {((page - 1) * 24) + 1}–{Math.min(page * 24, totalCount)} of {totalCount} products
+      <p className="text-sm text-gray-400 mb-4 h-5">
+        {!loading && totalCount > 0 && (
+          <>Showing {startItem}–{endItem} of {totalCount} products</>
+        )}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map(product => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onClick={() => onProductClick(product)}
-            onDelete={onDeleteClick}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 24 }).map((_, i) => <SkeletonCard key={i} />)
+          : products.map(product => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={() => onProductClick(product)}
+                onDelete={onDeleteClick}
+              />
+            ))
+        }
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {!loading && totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-10">
           <button
             onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}

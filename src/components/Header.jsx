@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Menu, X, Lock, LogOut } from 'lucide-react'
 import { useAdmin } from '../contexts/AdminContext'
+import { APP_VERSION } from '../lib/version'
 
 export function Header({ onMenuClick, isMenuOpen, onAdminClick }) {
   const { isAdmin, logout } = useAdmin()
@@ -27,7 +28,7 @@ export function Header({ onMenuClick, isMenuOpen, onAdminClick }) {
                   LBC Outerwear Catalog
                 </h1>
                 <p className="text-xs text-gray-400 hidden sm:block">
-                  The London Bespoke Club
+                  The London Bespoke Club &nbsp;·&nbsp; v{APP_VERSION}
                 </p>
               </div>
             </div>

@@ -21,8 +21,6 @@ function App() {
 
   const {
     products,
-    allProducts,
-    filteredProducts,
     loading,
     error,
     filters,
@@ -31,10 +29,11 @@ function App() {
     toggleArrayFilter,
     clearFilters,
     hasActiveFilters,
+    totalCount,
+    allProductCount,
     page,
     setPage,
     totalPages,
-    totalCount,
     refetch
   } = useProducts()
 
@@ -57,7 +56,7 @@ function App() {
             hasActiveFilters={hasActiveFilters}
             isOpen={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
-            totalCount={allProducts.length}
+            totalCount={allProductCount}
             filteredCount={totalCount}
           />
 
