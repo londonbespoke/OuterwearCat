@@ -39,7 +39,7 @@ export function CatalogPage() {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex min-h-[calc(100vh-4rem)] bg-surface-base">
         <FilterSidebar
           filters={filters}
           filterOptions={filterOptions}

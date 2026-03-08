@@ -1,53 +1,61 @@
 import { useCatalogs } from '../hooks/useCatalogs'
 import { CatalogCard } from '../components/CatalogCard'
 import { Loader2 } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
+
+const LBC_LOGO = 'https://images.squarespace-cdn.com/content/v1/6399f2e7e0cdcb3da2ac54b5/8b75dbdc-381a-462b-a743-c2f0ff407eed/TLBC+2018+Logo+%281%29.png?format=750w'
 
 export function HomePage() {
   const { catalogs, loading, error } = useCatalogs()
+  const { theme } = useTheme()
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50">
+    <div className="min-h-[calc(100vh-4rem)] bg-surface-base">
       {/* Hero section */}
-      <div className="bg-gray-900 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-16 text-center">
-          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-6">
-            <span className="text-gray-900 font-bold text-2xl">LBC</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+      <div className="border-b border-border-subtle">
+        <div className="max-w-6xl mx-auto px-6 py-20 text-center animate-fade-in">
+          <img
+            src={LBC_LOGO}
+            alt="The London Bespoke Club"
+            className="h-20 w-auto mx-auto mb-8"
+            style={theme === 'light' ? { filter: 'invert(1) brightness(0.25)' } : undefined}
+          />
+          <h2 className="text-4xl sm:text-5xl font-serif font-semibold tracking-tight text-text-primary">
             Product Catalog
           </h2>
-          <p className="mt-3 text-gray-400 text-lg max-w-xl mx-auto">
+          <div className="w-12 h-px bg-gold mx-auto mt-6 mb-4" />
+          <p className="text-text-secondary text-sm uppercase tracking-[0.2em] max-w-xl mx-auto">
             Select a collection to browse
           </p>
         </div>
       </div>
 
       {/* Catalog grid */}
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-14">
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-            <p className="mt-4 text-gray-500">Loading catalogs...</p>
+            <Loader2 className="w-8 h-8 animate-spin text-gold" />
+            <p className="mt-4 text-text-muted">Loading catalogs...</p>
           </div>
         )}
 
         {error && (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg">
+            <div className="text-danger bg-danger/10 border border-danger/20 px-6 py-4 rounded-lg">
               <p className="font-medium">Error loading catalogs</p>
-              <p className="text-sm mt-1">{error}</p>
+              <p className="text-sm mt-1 text-danger/80">{error}</p>
             </div>
           </div>
         )}
 
         {!loading && !error && catalogs.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+          <div className="flex flex-col items-center justify-center py-20 text-text-muted">
             <p className="text-lg font-medium">No catalogs available yet</p>
           </div>
         )}
 
         {!loading && !error && catalogs.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in" style={{ animationDelay: '0.15s' }}>
             {catalogs.map(catalog => (
               <CatalogCard key={catalog.id} catalog={catalog} />
             ))}

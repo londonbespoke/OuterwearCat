@@ -11,8 +11,8 @@ export function ImageCarousel({ images, coverImageUrl, onImageClick }) {
 
   if (allImages.length === 0) {
     return (
-      <div className="aspect-square bg-gray-100 flex items-center justify-center rounded-lg">
-        <span className="text-gray-400">No image available</span>
+      <div className="aspect-square bg-surface-elevated flex items-center justify-center rounded-lg">
+        <span className="text-text-muted">No image available</span>
       </div>
     )
   }
@@ -26,7 +26,7 @@ export function ImageCarousel({ images, coverImageUrl, onImageClick }) {
   return (
     <div className="relative">
       <div
-        className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-zoom-in"
+        className="aspect-square bg-surface-elevated rounded-lg overflow-hidden cursor-zoom-in"
         onClick={() => onImageClick?.(currentIndex)}
       >
         <img
@@ -40,17 +40,15 @@ export function ImageCarousel({ images, coverImageUrl, onImageClick }) {
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-lg"
-            style={{ backgroundColor: '#14a3c7' }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-lg bg-gold/90 hover:bg-gold transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-white" />
+            <ChevronLeft className="w-5 h-5 text-surface-base" />
           </button>
           <button
             onClick={goToNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-lg"
-            style={{ backgroundColor: '#14a3c7' }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full shadow-lg bg-gold/90 hover:bg-gold transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-white" />
+            <ChevronRight className="w-5 h-5 text-surface-base" />
           </button>
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
@@ -59,13 +57,13 @@ export function ImageCarousel({ images, coverImageUrl, onImageClick }) {
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  idx === currentIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/75'
+                  idx === currentIndex ? 'bg-gold' : 'bg-white/40 hover:bg-white/60'
                 }`}
               />
             ))}
           </div>
 
-          <div className="absolute top-4 right-4 bg-black/60 text-white text-sm px-3 py-1 rounded-full">
+          <div className="absolute top-4 right-4 bg-surface-base/70 backdrop-blur-sm text-gold text-sm px-3 py-1 rounded-full border border-gold/20">
             {currentIndex + 1} / {allImages.length}
           </div>
         </>

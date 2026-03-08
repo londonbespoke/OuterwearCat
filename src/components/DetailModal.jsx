@@ -58,20 +58,20 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl"
+        className="bg-surface-card rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-border-subtle animate-modal-in"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
           {/* Image section */}
-          <div className="md:w-1/2 p-4 bg-gray-50 flex items-center justify-center">
+          <div className="md:w-1/2 p-4 bg-surface-base flex items-center justify-center">
             {imagesLoading ? (
-              <div className="flex flex-col items-center gap-2 text-gray-400">
-                <Loader2 className="w-6 h-6 animate-spin" />
-                <span className="text-sm">Loading images…</span>
+              <div className="flex flex-col items-center gap-2 text-text-muted">
+                <Loader2 className="w-6 h-6 animate-spin text-gold" />
+                <span className="text-sm">Loading images...</span>
               </div>
             ) : (
               <ImageCarousel
@@ -86,9 +86,9 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
           <div className="md:w-1/2 p-6 overflow-y-auto">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">{product.name}</h2>
+                <h2 className="text-xl font-serif font-semibold text-text-primary">{product.name}</h2>
                 {product.sku && (
-                  <p className="text-sm text-gray-400 mt-0.5">SKU: {product.sku}</p>
+                  <p className="text-sm text-text-muted mt-0.5">SKU: {product.sku}</p>
                 )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
@@ -96,19 +96,19 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
                   <>
                     <button
                       onClick={() => setEditOpen(true)}
-                      className="p-2 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg"
+                      className="p-2 bg-gold/10 text-gold hover:bg-gold/20 rounded-lg transition-colors"
                     >
                       <Pencil className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => onDelete(product)}
-                      className="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg"
+                      className="p-2 bg-danger/10 text-danger hover:bg-danger/20 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </>
                 )}
-                <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+                <button onClick={onClose} className="p-2 hover:bg-surface-elevated rounded-lg text-text-muted hover:text-text-primary transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -118,12 +118,12 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
               {/* Category / Subcategory */}
               <div className="flex gap-2 flex-wrap">
                 {product.category && (
-                  <span className="px-3 py-1 bg-gray-900 text-white rounded-full text-sm">
+                  <span className="px-3 py-1 bg-gold/15 text-gold rounded-full text-sm">
                     {product.category}
                   </span>
                 )}
                 {product.subcategory && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-surface-elevated text-text-secondary rounded-full text-sm border border-border-subtle">
                     {product.subcategory}
                   </span>
                 )}
@@ -132,13 +132,13 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
               {/* Specifications */}
               {product.specifications && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+                  <h3 className="text-xs font-medium text-text-muted uppercase tracking-[0.15em] mb-2">
                     Specifications
                   </h3>
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="bg-surface-base rounded-lg p-4 border border-border-subtle">
                     <ul className="space-y-1">
                       {product.specifications.split('|').map((spec, idx) => (
-                        <li key={idx} className="text-sm text-gray-700">
+                        <li key={idx} className="text-sm text-text-secondary">
                           {spec.trim()}
                         </li>
                       ))}
@@ -150,12 +150,12 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
               {/* Tags */}
               {product.tags?.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
+                  <h3 className="text-xs font-medium text-text-muted uppercase tracking-[0.15em] mb-2">
                     Features
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {product.tags.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                      <span key={idx} className="px-3 py-1 bg-surface-elevated text-text-secondary rounded-full text-sm border border-border-subtle">
                         {tag}
                       </span>
                     ))}
@@ -165,7 +165,7 @@ export function DetailModal({ product: initialProduct, onClose, onDelete, onUpda
 
               {/* Image count */}
               {!imagesLoading && allImageUrls.length > 1 && (
-                <p className="text-xs text-gray-400">{allImageUrls.length} photos available</p>
+                <p className="text-xs text-text-muted">{allImageUrls.length} photos available</p>
               )}
             </div>
           </div>

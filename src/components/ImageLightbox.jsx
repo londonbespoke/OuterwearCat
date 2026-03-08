@@ -34,13 +34,13 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }) {
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 p-3 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors z-10"
+        className="absolute top-4 right-4 p-3 text-text-secondary hover:text-gold hover:bg-gold/10 rounded-full transition-colors z-10"
       >
         <X className="w-8 h-8" />
       </button>
 
       {images.length > 1 && (
-        <div className="absolute top-4 left-4 text-white/80 text-lg font-medium z-10">
+        <div className="absolute top-4 left-4 text-gold text-lg font-medium z-10">
           {currentIndex + 1} / {images.length}
         </div>
       )}
@@ -60,17 +60,15 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }) {
         <>
           <button
             onClick={e => { e.stopPropagation(); goToPrevious() }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg"
-            style={{ backgroundColor: '#14a3c7' }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg bg-gold/90 hover:bg-gold transition-colors"
           >
-            <ChevronLeft className="w-10 h-10 text-white" />
+            <ChevronLeft className="w-10 h-10 text-surface-base" />
           </button>
           <button
             onClick={e => { e.stopPropagation(); goToNext() }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg"
-            style={{ backgroundColor: '#14a3c7' }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full shadow-lg bg-gold/90 hover:bg-gold transition-colors"
           >
-            <ChevronRight className="w-10 h-10 text-white" />
+            <ChevronRight className="w-10 h-10 text-surface-base" />
           </button>
 
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
@@ -79,7 +77,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }) {
                 key={idx}
                 onClick={e => { e.stopPropagation(); setCurrentIndex(idx) }}
                 className={`w-3 h-3 rounded-full transition-colors ${
-                  idx === currentIndex ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
+                  idx === currentIndex ? 'bg-gold' : 'bg-white/30 hover:bg-white/50'
                 }`}
               />
             ))}

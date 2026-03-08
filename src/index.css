@@ -2,8 +2,117 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+
+  --color-gold: #C9A96E;
+  --color-gold-muted: #8B7355;
+  --color-gold-light: #D4BA85;
+
+  --color-surface-base: #0A0A0A;
+  --color-surface-card: #111111;
+  --color-surface-elevated: #1A1A1A;
+
+  --color-text-primary: #F5F0EB;
+  --color-text-secondary: #9A9590;
+  --color-text-muted: #6B6560;
+
+  --color-border-subtle: #2A2520;
+  --color-border-hover: #3A3530;
+
+  --color-danger: #C45050;
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-surface-base text-text-primary antialiased;
 }
+
+::selection {
+  background: rgba(201, 169, 110, 0.3);
+  color: #F5F0EB;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #2A2520; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3A3530; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-modal-in {
+  animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, #111111 25%, #1A1A1A 50%, #111111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in, .animate-modal-in { animation: none; opacity: 1; transform: none; }
+  .animate-shimmer { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.4);
+}
+input[type="checkbox"] { accent-color: #C9A96E; }
+
+/* ==========================================
+   LIGHT MODE -- Soft Taupe & Champagne
+   ========================================== */
+
+html.light {
+  --color-gold: #96783A;
+  --color-gold-muted: #7A6545;
+  --color-gold-light: #C9A96E;
+
+  --color-surface-base: #F5F0E8;
+  --color-surface-card: #FDFBF7;
+  --color-surface-elevated: #EBE5DB;
+
+  --color-text-primary: #2C2420;
+  --color-text-secondary: #6B6058;
+  --color-text-muted: #9A9088;
+
+  --color-border-subtle: #DDD5C9;
+  --color-border-hover: #C8BFB2;
+
+  --color-danger: #B84040;
+}
+
+html.light ::selection {
+  background: rgba(150, 120, 58, 0.25);
+  color: #2C2420;
+}
+
+html.light ::-webkit-scrollbar-track { background: #F5F0E8; }
+html.light ::-webkit-scrollbar-thumb { background: #DDD5C9; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #C8BFB2; }
+
+html.light .animate-shimmer {
+  background: linear-gradient(90deg, #EBE5DB 25%, #F5F0E8 50%, #EBE5DB 75%);
+  background-size: 200% 100%;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  box-shadow: 0 0 0 2px rgba(150, 120, 58, 0.3);
+}
+html.light input[type="checkbox"] { accent-color: #96783A; }

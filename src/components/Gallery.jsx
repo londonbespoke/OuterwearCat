@@ -4,14 +4,14 @@ import { PAGE_SIZE_OPTIONS } from '../hooks/useProducts'
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="aspect-square bg-gray-200" />
+    <div className="bg-surface-card rounded-xl border border-border-subtle overflow-hidden">
+      <div className="aspect-square animate-shimmer" />
       <div className="p-4 space-y-2">
-        <div className="h-3 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-1/2" />
+        <div className="h-3 bg-surface-elevated rounded w-3/4" />
+        <div className="h-3 bg-surface-elevated rounded w-1/2" />
         <div className="flex gap-1.5 mt-2">
-          <div className="h-5 bg-gray-200 rounded-full w-16" />
-          <div className="h-5 bg-gray-200 rounded-full w-12" />
+          <div className="h-5 bg-surface-elevated rounded-full w-16" />
+          <div className="h-5 bg-surface-elevated rounded-full w-12" />
         </div>
       </div>
     </div>
@@ -22,9 +22,9 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="text-red-500 bg-red-50 px-6 py-4 rounded-lg">
+        <div className="text-danger bg-danger/10 border border-danger/20 px-6 py-4 rounded-lg">
           <p className="font-medium">Error loading products</p>
-          <p className="text-sm mt-1">{error}</p>
+          <p className="text-sm mt-1 text-danger/80">{error}</p>
         </div>
       </div>
     )
@@ -32,8 +32,8 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
 
   if (!loading && products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-400 text-center">
-        <p className="text-lg font-medium">No products found</p>
+      <div className="flex flex-col items-center justify-center py-20 text-text-muted text-center">
+        <p className="text-lg font-serif font-medium">No products found</p>
         <p className="text-sm mt-1">Try adjusting your filters</p>
       </div>
     )
@@ -47,17 +47,17 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
     <div>
       {/* Results count + per-page selector */}
       <div className="flex items-center justify-between mb-4 h-8">
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-text-muted">
           {!loading && totalCount > 0 && (
-            <>Showing {startItem}–{endItem} of {totalCount} products</>
+            <>Showing {startItem}--{endItem} of {totalCount} products</>
           )}
         </p>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-text-secondary">
           <span>Show</span>
           <select
             value={pageSize}
             onChange={e => changePageSize(e.target.value === 'All' ? 'All' : Number(e.target.value))}
-            className="border border-gray-200 rounded-lg px-2 py-1 text-sm bg-white hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900"
+            className="border border-border-subtle rounded-lg px-2 py-1 text-sm bg-surface-card text-text-primary hover:border-border-hover"
           >
             {PAGE_SIZE_OPTIONS.map(opt => (
               <option key={opt} value={opt}>{opt}</option>
@@ -67,7 +67,7 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
         {loading
           ? Array.from({ length: 24 }).map((_, i) => <SkeletonCard key={i} />)
           : products.map(product => (
@@ -87,7 +87,7 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
           <button
             onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
             disabled={page === 1}
-            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="p-2 rounded-lg border border-border-subtle hover:border-gold/40 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed text-text-secondary transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -101,15 +101,15 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
             }, [])
             .map((p, idx) =>
               p === '...' ? (
-                <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">…</span>
+                <span key={`ellipsis-${idx}`} className="px-2 text-text-muted">...</span>
               ) : (
                 <button
                   key={p}
                   onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
                   className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                     p === page
-                      ? 'bg-gray-900 text-white'
-                      : 'border border-gray-200 hover:bg-gray-50 text-gray-700'
+                      ? 'bg-gold text-surface-base'
+                      : 'border border-border-subtle hover:border-gold/40 text-text-secondary hover:text-gold'
                   }`}
                 >
                   {p}
@@ -120,7 +120,7 @@ export function Gallery({ products, loading, error, onProductClick, onDeleteClic
           <button
             onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
             disabled={page === totalPages}
-            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="p-2 rounded-lg border border-border-subtle hover:border-gold/40 hover:text-gold disabled:opacity-30 disabled:cursor-not-allowed text-text-secondary transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
