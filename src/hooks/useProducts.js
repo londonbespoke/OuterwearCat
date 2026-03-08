@@ -3,8 +3,8 @@ import { supabase } from '../lib/supabase'
 
 export const PAGE_SIZE_OPTIONS = [24, 48, 96, 'All']
 
-export function useProducts() {
-  // Lightweight metadata for sidebar filter options (fetched once, no images)
+export function useProducts(catalogSlug) {
+  // Lightweight metadata for sidebar filter options (scoped to this catalog)
   const [filterMeta, setFilterMeta] = useState([])
 
   // Current page of products (server-paginated)
@@ -23,16 +23,28 @@ export function useProducts() {
     search: ''
   })
 
-  // Fetch lightweight filter metadata once on mount
+  // Reset state when catalog changes
   useEffect(() => {
-    supabase
+    setPage(1)
+    setFilters({ categories: [], subcategories: [], collections: [], tags: [], search: '' })
+    setProducts([])
+    setFilterMeta([])
+  }, [catalogSlug])
+
+  // Fetch lightweight filter metadata (scoped to catalog)
+  useEffect(() => {
+    if (!catalogSlug) return
+    let query = supabase
       .from('products')
       .select('category, subcategory, tags, collection')
-      .then(({ data }) => setFilterMeta(data || []))
-  }, [])
+      .eq('catalog_slug', catalogSlug)
+
+    query.then(({ data }) => setFilterMeta(data || []))
+  }, [catalogSlug])
 
   // Fetch current page whenever page or filters change
   const fetchPage = useCallback(async () => {
+    if (!catalogSlug) return
     setLoading(true)
     setError(null)
     try {
@@ -43,9 +55,10 @@ export function useProducts() {
       let query = supabase
         .from('products')
         .select(
-          'id, name, sku, category, subcategory, specifications, tags, collection, cover_image_url',
+          'id, name, sku, category, subcategory, specifications, tags, collection, catalog_slug, cover_image_url',
           { count: 'exact' }
         )
+        .eq('catalog_slug', catalogSlug)
         .order('name', { ascending: true })
         .range(start, end)
 
@@ -79,7 +92,7 @@ export function useProducts() {
     } finally {
       setLoading(false)
     }
-  }, [page, pageSize, filters])
+  }, [catalogSlug, page, pageSize, filters])
 
   useEffect(() => {
     fetchPage()
@@ -90,8 +103,8 @@ export function useProducts() {
     const categories = new Set()
     const subcategories = new Set()
     const tags = new Set()
-
     const collections = new Set()
+
     filterMeta.forEach(p => {
       if (p.category) categories.add(p.category)
       if (p.subcategory) subcategories.add(p.subcategory)

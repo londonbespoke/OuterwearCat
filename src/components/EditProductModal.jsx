@@ -6,9 +6,10 @@ export function EditProductModal({ product, onClose, onSaved }) {
   const [form, setForm] = useState({
     name: product.name || '',
     sku: product.sku || '',
+    catalog_slug: product.catalog_slug || '',
+    collection: product.collection || '',
     category: product.category || '',
     subcategory: product.subcategory || '',
-    collection: product.collection || '',
     specifications: product.specifications || '',
     tagsRaw: (product.tags || []).join(', ')
   })
@@ -19,9 +20,10 @@ export function EditProductModal({ product, onClose, onSaved }) {
     setSaving(true)
     setError(null)
     try {
+      const { tagsRaw, ...fields } = form
       const updated = await updateProduct(product.id, {
-        ...form,
-        tags: form.tagsRaw
+        ...fields,
+        tags: tagsRaw
           .split(',')
           .map(t => t.trim())
           .filter(Boolean)
@@ -74,6 +76,7 @@ export function EditProductModal({ product, onClose, onSaved }) {
         <div className="p-6 space-y-4">
           {field('Product Name', 'name')}
           {field('SKU', 'sku')}
+          {field('Catalog Slug', 'catalog_slug')}
           {field('Collection', 'collection')}
           {field('Category', 'category')}
           {field('Subcategory', 'subcategory')}
